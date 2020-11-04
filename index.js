@@ -25,7 +25,7 @@ let twoHitsArray;
 
 let btn = document.getElementsByClassName( "spin-btn" )[ 0 ];
 
-const _sectors = [
+let _sectors = [
     { startDeg: 0, endDeg: 19, price: 18, sectorHits: 0 },
     { startDeg: 20, endDeg: 39, price: 17, sectorHits: 0 },
     { startDeg: 40, endDeg: 59, price: 16, sectorHits: 0 },
@@ -252,22 +252,51 @@ function checkPrevSectors( lastSector, currentSector, currDeg ) {
 
 let hitters = []
 
+function resetHitters() { // resets the counters after the 10th spin
+    return hitters = [];
+}
+
+function resetBoard() {
+    return _sectors = [
+        { startDeg: 0, endDeg: 19, price: 18, sectorHits: 0 },
+        { startDeg: 20, endDeg: 39, price: 17, sectorHits: 0 },
+        { startDeg: 40, endDeg: 59, price: 16, sectorHits: 0 },
+        { startDeg: 60, endDeg: 79, price: 15, sectorHits: 0 },
+        { startDeg: 80, endDeg: 99, price: 14, sectorHits: 0 },
+        { startDeg: 100, endDeg: 119, price: 13, sectorHits: 0 },
+        { startDeg: 120, endDeg: 139, price: 12, sectorHits: 0 },
+        { startDeg: 140, endDeg: 159, price: 11, sectorHits: 0 },
+        { startDeg: 160, endDeg: 179, price: 10, sectorHits: 0 },
+        { startDeg: 180, endDeg: 199, price: 9, sectorHits: 0 },
+        { startDeg: 200, endDeg: 219, price: 8, sectorHits: 0 },
+        { startDeg: 220, endDeg: 239, price: 7, sectorHits: 0 },
+        { startDeg: 240, endDeg: 259, price: 6, sectorHits: 0 },
+        { startDeg: 260, endDeg: 279, price: 5, sectorHits: 0 },
+        { startDeg: 280, endDeg: 299, price: 4, sectorHits: 0 },
+        { startDeg: 300, endDeg: 319, price: 3, sectorHits: 0 },
+        { startDeg: 320, endDeg: 339, price: 2, sectorHits: 0 },
+        { startDeg: 340, endDeg: 359, price: 1, sectorHits: 0 },
+    ]
+}
+
 // MAIN FUNC - 10 turns game flow 
 function turnBasedLoop( oneHitsArr, zeroHitters ) {
 
     if ( tenTurns.length >= 10 ) {
         resetTenTurnsArr();
         // resetSectorsWith2x();
-        hitters = [];
+        // hitters = [];
+        resetHitters();
+        resetBoard();
 
-        condition1 = false;
-        condition2 = false;
-        condition3 = false;
-        condition4 = false;
-        condition5 = false;
-        condition6 = false;
-        condition7 = false;
-        condition8 = false;
+        // condition1 = false;
+        // condition2 = false;
+        // condition3 = false;
+        // condition4 = false;
+        // condition5 = false;
+        // condition6 = false;
+        // condition7 = false;
+        // condition8 = false;
     }
 
     const min = 1440;
@@ -372,8 +401,9 @@ function turnBasedLoop( oneHitsArr, zeroHitters ) {
 
         // currentSectorIndex = getRandomArbitrary( firstIndex, lastIndex ); // with the added + 1, we can pick from the 2 sectors
         // Math.random does not include the top number
-        let index = sectorsWith2x.indexOf( lastSector[ "price" ] )
-        currentSector = sectorsWith2x.filter( x => x[ index ] !== index )[ 0 ];
+        let index = sectorsWith2x.indexOf( currentSector[ "price" ] )
+        console.log( index );
+        currentSector = sectorsWith2x[ 1 ];
 
         deg = currentSector[ "startDeg" ] + 1440 + 5;
     }
@@ -392,6 +422,15 @@ function turnBasedLoop( oneHitsArr, zeroHitters ) {
     let d = a.map( x => JSON.parse( x ) );
 
     hitters = d;
+
+    condition1 = false;
+    condition2 = false;
+    condition3 = false;
+    condition4 = false;
+    condition5 = false;
+    condition6 = false;
+    condition7 = false;
+    condition8 = false;
 
 }
 
