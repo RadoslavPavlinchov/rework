@@ -1,0 +1,180 @@
+.site-header {
+    text-align: center;
+}
+
+.site-footer {
+    text-align: center;
+}
+
+
+
+.info-section {
+    width: 100%;
+    text-align: center;
+}
+
+div p {
+    padding-top: 10px;
+    padding-left: 5px;
+}
+
+.spin-btn {
+    display: inline-block;
+    color: #000;
+    background-color: #fff;
+    border-radius: 2rem;
+    border: 1px solid #000;
+    padding: 1rem 3rem;
+}
+
+
+
+.status {
+    padding-bottom: 10px;
+}
+
+
+
+.triangle {
+    width: 0px;
+    height: 0px;
+
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 30px solid #000;
+
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+}
+
+
+/* All sectors */
+
+.sector-one {
+    background-color: #54478c;
+    z-index: 10;
+    transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+}
+
+.sector-two {
+    background-color: #2c699a;
+    z-index: 20;
+    transform: rotate(20deg);
+    -webkit-transform: rotate(20deg);
+}
+
+.sector-three{
+    background-color: #048ba8;
+    z-index: 30;
+    transform: rotate(40deg);
+    -webkit-transform: rotate(40deg);
+}
+
+.sector-four{
+    background-color: #0db39e;
+    z-index: 40;
+    transform: rotate(60deg);
+    -webkit-transform: rotate(60deg);
+}
+
+.sector-five{
+    background-color: #16db93;
+    z-index: 50;
+    transform: rotate(80deg);
+    -webkit-transform: rotate(80deg);
+}
+
+.sector-six{
+    background-color: #83e377;
+    z-index: 60;
+    transform: rotate(100deg);
+    -webkit-transform: rotate(100deg);
+}
+
+.sector-seven{
+    background-color: #b9e769;
+    z-index: 70;
+    transform: rotate(120deg);
+    -webkit-transform: rotate(120deg);
+}
+
+.sector-eight{
+    background-color: #efea5a;
+    z-index: 80;
+    transform: rotate(140deg);
+    -webkit-transform: rotate(140deg);
+}
+
+
+.sector-nine{
+    background-color: #f29e4c;
+    z-index: 90;
+    transform: rotate(160deg);
+    -webkit-transform: rotate(160deg);
+}
+
+
+.sector-ten {
+    background-color: #54478c;
+    z-index: 10;
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+}
+
+.sector-eleven {
+    background-color: #2c699a;
+    z-index: 20;
+    transform: rotate(200deg);
+    -webkit-transform: rotate(200deg);
+}
+
+.sector-twelve {
+    background-color: #048ba8;
+    z-index: 30;
+    transform: rotate(220deg);
+    -webkit-transform: rotate(220deg);
+}
+
+.sector-thirteen {
+    background-color: #0db39e;
+    z-index: 40;
+    transform: rotate(240deg);
+    -webkit-transform: rotate(240deg);
+}
+
+.sector-fourteen {
+    background-color: #16db93;
+    z-index: 50;
+    transform: rotate(260deg);
+    -webkit-transform: rotate(260deg);
+}
+
+.sector-fifteen {
+    background-color: #83e377;
+    z-index: 60;
+    transform: rotate(280deg);
+    -webkit-transform: rotate(280deg);
+}
+
+.sector-sixteen {
+    background-color: #b9e769;
+    z-index: 70;
+    transform: rotate(300deg);
+    -webkit-transform: rotate(300deg);
+}
+
+.sector-seventeen {
+    background-color: #efea5a;
+    z-index: 80;
+    transform: rotate(320deg);
+    -webkit-transform: rotate(320deg);
+}
+
+.sector-eighteen {
+    background-color: #f29e4c;
+    z-index: 90;
+    transform: rotate(340deg);
+    -webkit-transform: rotate(340deg);
+}
