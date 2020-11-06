@@ -127,14 +127,14 @@ function resetTenTurnsArr() {
 
 
 // New sector reset - we can re-render the new board
-function isCurrSectorAlready2x( arr, currSec ) {
-    return arr.find( x => x[ "price" ] === currSec[ "price" ] );
+function isCurrSectorAlready2x( arr, currentSector ) {
+    return arr.find( x => x[ 0 ] === Object.entries( sectors )[ currentSector ] );
 }
 
 
 // New conditions - must replace the ternary operator with one if statement, since we reset all conditions at the end of the spins
 const cond1 = ( sectorsWith2x, func ) => {                                // Condition 1
-    if ( sectorsWith2x.length === 2 && func( sectorsWith2x, currSec ) ) {
+    if ( sectorsWith2x.length === 2 && func( sectorsWith2x, currentSector ) ) {
         conditionsMap[ "condition1" ] = true,
             x3Sector = currentSector,
             x2Sector = lastSector
@@ -142,7 +142,7 @@ const cond1 = ( sectorsWith2x, func ) => {                                // Con
 }
 
 const cond2 = ( sectorsWith2x, func ) => {                                // Condition 2
-    if ( sectorsWith2x.length === 1 && func( sectorsWith2x, currSec ) ) {
+    if ( sectorsWith2x.length === 1 && func( sectorsWith2x, currentSector ) ) {
         conditionsMap[ "condition2" ] = true,
             x3Sector = currentSector
     }
@@ -213,7 +213,7 @@ function turnBasedLoop() {
     }
 
     // New sectorsWith2x
-    let sectorsWith2x = hitters.filter( x => x[ "hits" ] === 2 );
+    let sectorsWith2x = hitters.filter( x => x[ 1 ][ "hits" ] === 2 );
 
     // New cond invocations 
     cond1( sectorsWith2x, isCurrSectorAlready2x( sectorsWith2x, currentSector ) );
@@ -226,7 +226,7 @@ function turnBasedLoop() {
     cond8( x3Sector, tenTurns );
 
     if ( conditionsMap[ "condition1" ] || conditionsMap[ "condition2" ] || conditionsMap[ "condition3" ] || conditionsMap[ "condition6" ] ) {
-        const zeroHitters = sectors.filter( x => x[ "hits" ] === 0 );
+        const zeroHitters = Object.entries( sectors ).filter( x => x[ 1 ][ "hits" ] === 0 );
 
         const firstIndex = 0;
         const lastIndex = zeroHitters.length;
@@ -236,7 +236,7 @@ function turnBasedLoop() {
     }
 
     if ( conditionsMap[ "condition4" ] || conditionsMap[ "condition5" ] || conditionsMap[ "condition8" ] ) {
-        const oneHitsArr = sectors.filter( x => x[ "hits" ] === 1 );
+        const oneHitsArr = Object.entries( sectors ).filter( x => x[ 1 ][ "hits" ] === 1 );
 
         const firstIndex = 0;
         const lastIndex = oneHitsArr.length;
@@ -266,9 +266,7 @@ function turnBasedLoop() {
 
     hitters = Array.from( new Set( tenTurns.map( x => JSON.stringify( x ) ) ) ).map( x => JSON.parse( x ) );
 
-    if ( hitters[] )
-
-        console.log( tenTurns )
+    console.log( tenTurns )
 
     for ( const x in conditionsMap ) {
         conditionsMap[ x ] = false;
