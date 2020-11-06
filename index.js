@@ -1,83 +1,65 @@
-
-// Global Variables
-let condition1 = false;
-let condition2 = false;
-let condition3 = false;
-let condition4 = false;
-let condition5 = false;
-let condition6 = false;
-let condition7 = false;
-let condition8 = false;
-
-let x2Sector;
-let x3Sector;
-
 let tenTurns = [];
 let sectorsWith2x = [];
-
+let hitters = [];
 let lastSector;
-let currentSector;
-
-let oneHitsArr;
-let zeroHitters;
-let twoHitsArray;
-
 
 let btn = document.getElementsByClassName( "spin-btn" )[ 0 ];
 
-let _sectors = [
-    { startDeg: 0, endDeg: 19, price: 18, sectorHits: 0 },
-    { startDeg: 20, endDeg: 39, price: 17, sectorHits: 0 },
-    { startDeg: 40, endDeg: 59, price: 16, sectorHits: 0 },
-    { startDeg: 60, endDeg: 79, price: 15, sectorHits: 0 },
-    { startDeg: 80, endDeg: 99, price: 14, sectorHits: 0 },
-    { startDeg: 100, endDeg: 119, price: 13, sectorHits: 0 },
-    { startDeg: 120, endDeg: 139, price: 12, sectorHits: 0 },
-    { startDeg: 140, endDeg: 159, price: 11, sectorHits: 0 },
-    { startDeg: 160, endDeg: 179, price: 10, sectorHits: 0 },
-    { startDeg: 180, endDeg: 199, price: 9, sectorHits: 0 },
-    { startDeg: 200, endDeg: 219, price: 8, sectorHits: 0 },
-    { startDeg: 220, endDeg: 239, price: 7, sectorHits: 0 },
-    { startDeg: 240, endDeg: 259, price: 6, sectorHits: 0 },
-    { startDeg: 260, endDeg: 279, price: 5, sectorHits: 0 },
-    { startDeg: 280, endDeg: 299, price: 4, sectorHits: 0 },
-    { startDeg: 300, endDeg: 319, price: 3, sectorHits: 0 },
-    { startDeg: 320, endDeg: 339, price: 2, sectorHits: 0 },
-    { startDeg: 340, endDeg: 359, price: 1, sectorHits: 0 },
-]
-
-
-// HELPER FUNCTIONS AND CONDITIONS
-function resetTenTurnsArr() { // resets the counters after the 10th spin
-    return tenTurns = [];
+let conditionsMap = {
+    condition1: false,
+    condition2: false,
+    condition3: false,
+    condition4: false,
+    condition5: false,
+    condition6: false,
+    condition7: false,
+    condition8: false,
 }
 
-// function fillUpTenTurnsArr( currPos ) {
-//     tenTurns.push( currPos );
-// }
+// New board 
+const sectorsCount = 18;
 
-function rotateWheel( deg ) {
+function generateSectors( secCount ) {
+    let board = {};
+
+    for ( let i = 0; i < secCount; i++ ) {
+        board[ `id-${i}` ] = {
+            prize: `${secCount - i}`,
+            hits: 0,
+            startDeg: +`${20 * i}`,
+            endDeg: +`${i * 20 + 19}`
+        }
+    }
+    return board;
+}
+
+let sectors = generateSectors( sectorsCount );
+
+
+// New rotate func with sectors
+function rotateWheel( currentSector, sectors ) { // sectors id-0, id-1
     let currStatus = document.getElementsByClassName( "status" )[ 0 ];
     currStatus.textContent = "Spinning...";
 
-    // fillUpTenTurnsArr( deg );
-
     let wheel = document.getElementsByClassName( "wheel-wrapper" )[ 0 ];
+
+    let deg = sectors[ `id-${currentSector}` ][ "startDeg" ] + ( 4 * 360 ) + 5;
 
     wheel.style.transitionTimingFunction = "ease-out";
     wheel.style.transitionDuration = " 6s";
-    wheel.style.transform = "rotate(" + deg + "deg)";
+    wheel.style.transform = "rotate(" + deg + "deg)"; // sectors[`id-${currentSector}`]["startDeg"] + 5
 
-    deg = parseInt( deg ) % 360;
+    deg = parseInt( deg ) % 360; // converts to the correct degrees from 0 - 360
 
     btn.disabled = true;
 
     setTimeout( () => {
-        resetWheel( deg )
+        resetWheel( currentSector, sectors, deg )
     }, 6000 );
 }
 
-function resetWheel( deg ) {
+// New reset function
+function resetWheel( sector, sectors, deg ) { // sectors 
     let wheel = document.getElementsByClassName( "wheel-wrapper" )[ 0 ];
 
     wheel.style.transitionTimingFunction = "";
@@ -85,353 +67,212 @@ function resetWheel( deg ) {
     wheel.style.transform = "rotate(" + deg + "deg)";
 
     let currStatus = document.getElementsByClassName( "status" )[ 0 ];
+    let arr = Object.entries( sectors )
 
-    for ( const x of _sectors ) {
-        if ( parseInt( deg ) >= x[ "startDeg" ] && parseInt( deg ) <= x[ "endDeg" ] ) {
-            // if ( x[ 2 ] === 6 ) {
-            //     currStatus.textContent = "Congratulations! You've won 3 free spins, Enjoy!";
+    for ( let i = 0; i < arr.length; i++ ) {
+        let id = arr[ i ][ 0 ];
 
-            //     deg = Math.floor( Math.random() * ( 1800 - 1560 ) + 1560 );
-            //     freeSpinsFlag = true;
-            //     // let btn = document.getElementsByClassName( "spin-btn" )[ 0 ];
-            //     btn.disabled = true;
-            //     freeSpins( deg );
-
-            // } else {
-            currStatus.textContent = "Congratulations! You've won " + "$" + x[ "price" ];
+        if ( id === `id-${sector}` ) {
+            currStatus.textContent = "Congratulations! You've won " + "$" + arr[ i ][ 1 ][ "prize" ];
             btn.disabled = false;
-            // }
+            return;
         }
     }
 }
 
+// New functions for modification of sectors
+function modifyAsPerLastSector( sec ) { // move to next sector 
+    if ( sec + 1 > 18 ) {
+        return sec -= 1
+    }
+    return sec += 1;
+}
 
-// function rotateFreeSpins( deg ) {  // rotates the wheel in bonus spins
-//     let sect = getCurrentSector( deg );
 
-//     if ( sect === freeSpinsSector ) {
-//         deg = modifyAsPerLastSector( deg );
-//         sect = getCurrentSector( deg );
-//     }
+function hitSector( sector, sectors ) {
+    let arr = Object.entries( sectors )
 
-//     let currStatus = document.getElementsByClassName( "status" )[ 0 ];
-//     currStatus.textContent = "Spinning...";
-
-//     let wheel = document.getElementsByClassName( "wheel-wrapper" )[ 0 ];
-
-//     wheel.style.transitionTimingFunction = "ease-out";
-//     wheel.style.transitionDuration = "6s";
-//     wheel.style.transform = "rotate(" + deg + "deg)";
-
-//     deg = parseInt( deg ) % 360;
-
-//     setTimeout( () => {
-//         resetWheel( deg )
-//     }, 6000 );
-// }
-
-// function resetFreeSpins( deg ) {
-//     let wheel = document.getElementsByClassName( "wheel-wrapper" )[ 0 ];
-
-//     wheel.style.transitionTimingFunction = "";
-//     wheel.style.transitionDuration = "0s";
-//     wheel.style.transform = "rotate(" + deg + "deg)";
-
-//     let currStatus = document.getElementsByClassName( "status" )[ 0 ];
-
-//     for ( const x of sectors ) {
-//         if ( parseInt( deg ) >= x[ 0 ] && parseInt( deg ) <= x[ 1 ] ) {
-//             currStatus.textContent = "Congratulations! You've won " + x[ 2 ];
-//         }
-//     }
-// }
-
-// function freeSpins( deg ) {
-
-//     let total = 0;
-
-//     setTimeout( () => {
-//         console.log( 'first deg received - ', deg );
-//         deg = Math.floor( Math.random() * ( 1800 - 1560 ) + 1560 );
-//         console.log( deg );
-
-//         total += getCurrentSector( deg );
-
-//         rotateFreeSpins( deg );
-//     }, 3000 )
-
-//     setTimeout( () => {
-//         console.log( 'first deg received - ', deg );
-//         deg = Math.floor( Math.random() * ( 1800 - 1560 ) + 1560 );
-//         console.log( deg );
-
-//         total += getCurrentSector( deg );
-
-//         rotateFreeSpins( deg );
-//     }, 10000, deg )
-
-//     setTimeout( () => {
-//         console.log( 'first deg received - ', deg );
-//         deg = Math.floor( Math.random() * ( 1800 - 1560 ) + 1560 );
-
-//         total += getCurrentSector( deg );
-
-//         rotateFreeSpins( deg )
-//     }, 17000, deg )
-
-//     setTimeout( () => {
-//         let currStatus = document.getElementsByClassName( "status" )[ 0 ];
-//         currStatus.textContent = "Wow! You've won " + "$" + total + " from your free spins!";
-
-//         let btn = document.getElementsByClassName( "spin-btn" )[ 0 ];
-//         btn.disabled = false;
-//     }, 24000 );
-// }
-
-function getCurrentSector( deg ) { // getCurrentSector
-
-    let normalizeDeg = deg - 1440;
-    normalizeDeg = parseInt( normalizeDeg / 10 );
-
-    for ( const sector of _sectors ) {
-        let startDeg = sector[ "startDeg" ]
-        let endDeg = sector[ "endDeg" ];
-
-        startDeg = parseInt( startDeg / 10 );
-        endDeg = parseInt( endDeg / 10 );
-
-        if ( startDeg === normalizeDeg || endDeg === normalizeDeg ) {
-            return sector;
+    for ( let i = 0; i < arr.length; i++ ) {
+        let id = arr[ i ][ 0 ];
+        if ( id === `id-${sector}` ) {
+            arr[ i ][ 1 ][ "hits" ]++;
         }
     }
 }
 
-function modifyAsPerLastSector( deg ) { // move to next sector 
-    if ( deg + 20 >= 1800 ) {
-        return deg -= 20
-    }
-    if ( deg - 20 <= 1440 ) {
-        return deg += 20
-    }
-    return deg += 20;
+// New getRandomNum() func for generating sectors
+function getRandomNum( min, max ) {
+    min = Math.ceil( min );
+    max = Math.floor( max );
+    return Math.floor( Math.random() * ( ( max + 1 ) - min ) + min );
 }
 
-
-function hitSector( sector ) { // updates the hits for a sector
-    let finder = _sectors.find( x => x[ "price" ] === sector[ "price" ] );
-    return finder[ "sectorHits" ]++;
-}
-
-
-
-function getRandomArbitrary( firstIndex, lastIndex ) {
-    firstIndex = Math.ceil( firstIndex );
-    lastIndex = Math.floor( lastIndex );
-    return Math.floor( Math.random() * ( lastIndex - firstIndex ) + firstIndex );
-}
-
-
-// New functions for replacement of the "if else" conditions
-function checkPrevSectors( lastSector, currentSector, currDeg ) {
+// New function for checking the previous sector
+function checkPrevSectors( lastSector, currentSector ) {
     if ( lastSector === currentSector ) {
-
-        deg = modifyAsPerLastSector( deg );
-
-        return {
-            deg
-        }
+        return currentSector = modifyAsPerLastSector( currentSector );
     }
-
-    deg = currDeg;
-
-    return {
-        deg
-    }
+    return currentSector
 }
 
-
-let hitters = []
-
-function resetHitters() { // resets the counters after the 10th spin
+// New reset for _hitters
+function resetHitters() {
     return hitters = [];
 }
 
-function resetBoard() {
-    return _sectors = [
-        { startDeg: 0, endDeg: 19, price: 18, sectorHits: 0 },
-        { startDeg: 20, endDeg: 39, price: 17, sectorHits: 0 },
-        { startDeg: 40, endDeg: 59, price: 16, sectorHits: 0 },
-        { startDeg: 60, endDeg: 79, price: 15, sectorHits: 0 },
-        { startDeg: 80, endDeg: 99, price: 14, sectorHits: 0 },
-        { startDeg: 100, endDeg: 119, price: 13, sectorHits: 0 },
-        { startDeg: 120, endDeg: 139, price: 12, sectorHits: 0 },
-        { startDeg: 140, endDeg: 159, price: 11, sectorHits: 0 },
-        { startDeg: 160, endDeg: 179, price: 10, sectorHits: 0 },
-        { startDeg: 180, endDeg: 199, price: 9, sectorHits: 0 },
-        { startDeg: 200, endDeg: 219, price: 8, sectorHits: 0 },
-        { startDeg: 220, endDeg: 239, price: 7, sectorHits: 0 },
-        { startDeg: 240, endDeg: 259, price: 6, sectorHits: 0 },
-        { startDeg: 260, endDeg: 279, price: 5, sectorHits: 0 },
-        { startDeg: 280, endDeg: 299, price: 4, sectorHits: 0 },
-        { startDeg: 300, endDeg: 319, price: 3, sectorHits: 0 },
-        { startDeg: 320, endDeg: 339, price: 2, sectorHits: 0 },
-        { startDeg: 340, endDeg: 359, price: 1, sectorHits: 0 },
-    ]
+// New reset for _tenTurns
+function resetTenTurnsArr() {
+    return tenTurns = [];
 }
 
-// MAIN FUNC - 10 turns game flow 
-function turnBasedLoop( oneHitsArr, zeroHitters ) {
 
+// New sector reset - we can re-render the new board
+function isCurrSectorAlready2x( arr, currSec ) {
+    return arr.find( x => x[ "price" ] === currSec[ "price" ] );
+}
+
+
+// New conditions - must replace the ternary operator with one if statement, since we reset all conditions at the end of the spins
+const cond1 = ( sectorsWith2x, func ) => {                                // Condition 1
+    if ( sectorsWith2x.length === 2 && func( sectorsWith2x, currSec ) ) {
+        conditionsMap[ "condition1" ] = true,
+            x3Sector = currentSector,
+            x2Sector = lastSector
+    }
+}
+
+const cond2 = ( sectorsWith2x, func ) => {                                // Condition 2
+    if ( sectorsWith2x.length === 1 && func( sectorsWith2x, currSec ) ) {
+        conditionsMap[ "condition2" ] = true,
+            x3Sector = currentSector
+    }
+}
+
+const cond3 = ( sectorsWith2x, currentSector ) => {                                // Condition 3 
+    if ( sectorsWith2x.length === 2 && currentSector[ "hits" ] === 1 ) {
+        conditionsMap[ "condition3" ] = true
+    }
+}
+
+const cond4 = ( sectorsWith2x, tenTurns ) => {                                // Condition 4
+    if ( sectorsWith2x.length === 0 && tenTurns.length >= 7 ) {
+        conditionsMap[ "condition4" ] = true
+    }
+}
+
+const cond5 = ( sectorsWith2x, tenTurns ) => {                                // Condition 5
+    if ( sectorsWith2x.length === 1 && tenTurns.length >= 7 ) {
+        conditionsMap[ "condition5" ] = true
+    }
+}
+
+const cond6 = ( x2Sector, x3Sector ) => {                                // Condition 6
+    if ( x2Sector && x3Sector ) {
+        conditionsMap[ "condition6" ] = true
+    }
+}
+
+const cond7 = ( sectorsWith2x, tenTurns ) => {                                // Condition 7
+    if ( sectorsWith2x.length === 2 && tenTurns.length === 9 ) {
+        conditionsMap[ "condition7" ] = true
+    }
+}
+
+const cond8 = ( x3Sector, tenTurns ) => {                                // Condition 8
+    if ( x3Sector && tenTurns.length === 9 ) {
+        conditionsMap[ "condition8" ] = true
+    }
+}
+
+
+// MAIN FUNC - 10 turns game flow 
+function turnBasedLoop() {
+
+
+    // New variables for the min spin deg and max spin deg
+    const min = 0; // 0 - 20 range
+    const max = 18; // 340 - 359 range
+
+    let x2Sector;
+    let x3Sector;
+
+    // New check for tenTurns
     if ( tenTurns.length >= 10 ) {
         resetTenTurnsArr();
-        // resetSectorsWith2x();
-        // hitters = [];
         resetHitters();
-        resetBoard();
-
-        // condition1 = false;
-        // condition2 = false;
-        // condition3 = false;
-        // condition4 = false;
-        // condition5 = false;
-        // condition6 = false;
-        // condition7 = false;
-        // condition8 = false;
+        // _resetBoard();
+        sectors = generateSectors( sectorsCount );
     }
 
-    const min = 1440;
-    const max = 1800;
-
-    let deg = Math.floor( Math.random() * ( max - min ) + min );
-    currentSector = getCurrentSector( deg );
+    let currentSector = getRandomNum( min, max );
 
 
-
-    if ( lastSector ) { // first check for the previous sector
-        deg = checkPrevSectors( lastSector, currentSector, deg )[ "deg" ];
-        // currentSector = checkPrevSectors( lastSector, currentSector, deg )[ "currentSector" ];
-        currentSector = getCurrentSector( deg );
+    // New check for sectors only - change it to a function
+    if ( lastSector ) {
+        currentSector = checkPrevSectors( lastSector, currentSector );
     }
 
-    // let sectorsWith2x = _sectors.filter( x => x[ "sectorHits" ] === 2 ).map( x => x[ "price" ] );   // condition 1 --- fifth spin x2 + x3
-    // let sectorsWith2x = tenTurns.filter( x => x[ "price" ] === currentSector[ "price" ] );
+    // New sectorsWith2x
+    let sectorsWith2x = hitters.filter( x => x[ "hits" ] === 2 );
 
-    let sectorsWith2x = hitters.filter( x => x[ "sectorHits" ] === 2 );
+    // New cond invocations 
+    cond1( sectorsWith2x, isCurrSectorAlready2x( sectorsWith2x, currentSector ) );
+    cond2( sectorsWith2x, isCurrSectorAlready2x( sectorsWith2x, currentSector ) );
+    cond3( sectorsWith2x, currentSector );
+    cond4( sectorsWith2x, tenTurns );
+    cond5( sectorsWith2x, tenTurns );
+    cond6( x2Sector, x3Sector );
+    cond7( sectorsWith2x, tenTurns );
+    cond8( x3Sector, tenTurns );
 
-    let isCurrSectorIncluded = sectorsWith2x.filter( x => x[ "price" ] === currentSector[ "price" ] );
+    if ( conditionsMap[ "condition1" ] || conditionsMap[ "condition2" ] || conditionsMap[ "condition3" ] || conditionsMap[ "condition6" ] ) {
+        const zeroHitters = sectors.filter( x => x[ "hits" ] === 0 );
 
-    if ( sectorsWith2x.length === 2 && isCurrSectorIncluded.lenght >= 1 ) {
-        x3Sector = currentSector;
-        x2Sector = sectorsWith2x.filter( x => x !== currentSector ).join();
+        const firstIndex = 0;
+        const lastIndex = zeroHitters.length;
 
-        condition1 = true;
-    }
-
-    // if ( sectorsWith2x.length === 2 && sectorsWith2x.includes( currentSector ) ) {
-    //     x3Sector = currentSector;
-    //     x2Sector = sectorsWith2x.filter( x => x !== currentSector ).join();
-
-    //     condition1 = true;
-    // }
-
-    // sectorsWith3x = _sectors.filter( x => x[ "sectorHits" ] === 2 ).map(x => x["price"]);   // condition 2 --- fifth spin x3
-    if ( sectorsWith2x.length === 1 && isCurrSectorIncluded.lenght >= 1 ) {
-        x3Sector = currentSector;
-
-        condition2 = true;
-    }
-
-    let currSecObj = _sectors.find( x => x[ "price" ] === currentSector[ "price" ] );
-    if ( sectorsWith2x.length === 2 && currSecObj[ "sectorHits" ] === 1 ) {       // Condition 3                                  // Condition 3 
-        condition3 = true; // should be changed to check the "currentSector" hits if they are 1
-    }
-
-    if ( sectorsWith2x.length === 0 && tenTurns.length >= 7 ) {                                      // 4th condition
-        condition4 = true; // should be changed to tenTurns array instead of _sectors.lenght
-    }
-
-    if ( sectorsWith2x.length === 1 && tenTurns.length >= 7 ) {                                      // 5th condition   
-        condition5 = true; // should be changed to tenTurns array instead of _sectors.lenght
-    }
-
-
-    if ( x2Sector && x3Sector ) {                                                                      // Condition 6 
-        condition6 = true;
-    }
-
-
-    if ( sectorsWith2x.length === 2 && tenTurns.length === 9 ) {                                      // Condition 7
-        condition7 = true; // should be changed to tenTurns array instead of _sectors.lenght
-    }
-
-
-    if ( x3Sector && tenTurns.length === 9 ) {                                                       // Condition 8
-        condition8 = true;
-    }
-
-    if ( condition1 || condition2 || condition3 || condition6 ) {
-        zeroHitters = _sectors.filter( x => x[ "sectorHits" ] === 0 );
-
-        let firstIndex = 0;
-        let lastIndex = zeroHitters.length;
-
-        currentSectorIndex = getRandomArbitrary( firstIndex, lastIndex );
+        currentSectorIndex = getRandomNum( firstIndex, lastIndex );
         currentSector = zeroHitters[ currentSectorIndex ];
-
-        deg = currentSector[ "startDeg" ] + 1440 + 5;
     }
 
-    if ( condition4 || condition5 || condition8 ) {
-        oneHitsArr = _sectors.filter( x => x[ "sectorHits" ] === 1 );
+    if ( conditionsMap[ "condition4" ] || conditionsMap[ "condition5" ] || conditionsMap[ "condition8" ] ) {
+        const oneHitsArr = sectors.filter( x => x[ "hits" ] === 1 );
 
-        let firstIndex = 0;
-        let lastIndex = oneHitsArr.length;
+        const firstIndex = 0;
+        const lastIndex = oneHitsArr.length;
 
-        currentSectorIndex = getRandomArbitrary( firstIndex, lastIndex );
+        currentSectorIndex = getRandomNum( firstIndex, lastIndex );
         currentSector = oneHitsArr[ currentSectorIndex ];
-
-        deg = currentSector[ "startDeg" ] + 1440 + 5;
     }
 
 
-    if ( condition7 ) {
-        // twoHitsArray = _sectors.filter( x => x[ "sectorHits" ] === 2 );
+    if ( conditionsMap[ "condition7" ] ) {
+        currentSector = sectorsWith2x[ 0 ];
 
-        // let lastIndex = twoHitsArray.length;
-
-        // currentSectorIndex = getRandomArbitrary( firstIndex, lastIndex ); // with the added + 1, we can pick from the 2 sectors
-        // Math.random does not include the top number
-        let index = sectorsWith2x.indexOf( currentSector[ "price" ] )
-        console.log( index );
-        currentSector = sectorsWith2x[ 1 ];
-
-        deg = currentSector[ "startDeg" ] + 1440 + 5;
+        if ( currentSector === lastSector ) {
+            currentSector = sectorsWith2x[ 1 ];
+        }
     }
 
+    rotateWheel( currentSector, sectors );
+    hitSector( currentSector, sectors );
 
-    rotateWheel( deg );
-    hitSector( currentSector );
+    console.log( currentSector );
+    console.log( lastSector );
 
     lastSector = currentSector;
 
-    tenTurns.push( lastSector );
+    tenTurns.push( Object.entries( sectors )[ lastSector ] );
 
-    let c = tenTurns.map( x => JSON.stringify( x ) );
-    let b = new Set( c );
-    let a = Array.from( b )
-    let d = a.map( x => JSON.parse( x ) );
+    hitters = Array.from( new Set( tenTurns.map( x => JSON.stringify( x ) ) ) ).map( x => JSON.parse( x ) );
 
-    hitters = d;
+    if ( hitters[] )
 
-    condition1 = false;
-    condition2 = false;
-    condition3 = false;
-    condition4 = false;
-    condition5 = false;
-    condition6 = false;
-    condition7 = false;
-    condition8 = false;
+        console.log( tenTurns )
 
+    for ( const x in conditionsMap ) {
+        conditionsMap[ x ] = false;
+    }
 }
 
 
