@@ -1,0 +1,55 @@
+body {
+    max-width: 60em;
+    margin: 0 auto;
+}
+
+#wheel-wrapper {
+    width: 500px;
+    height: 500px;
+    position: relative;
+    margin: 0 auto 50px auto;
+}
+
+
+.semi-wheel-wrapper {
+    width: 250px;
+    height: 500px;
+    overflow: hidden;
+    position: relative;
+}
+
+
+.first-part-wheel {
+    float: right;
+}
+
+.second-part-wheel {
+    float: left;
+}
+
+
+.sector-wrapper {
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+}
+
+.semi-circleOne {
+    margin-left: -250px;
+}
+
+.semi-circleTwo {
+    margin-left: 0px;
+}
+
+.sector {
+    width: 250px;
+    height: 250px;
+    position: absolute;
+    margin-left: 250px;
+    margin-top: 0px;
+    transform-origin: 0% 100%;
+    -webkit-transform-origin: 0% 100%;
+}
