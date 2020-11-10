@@ -3,7 +3,7 @@ body {
     margin: 0 auto;
 }
 
-.wheel-wrapper {
+#wheel-wrapper {
     width: 500px;
     height: 500px;
     position: relative;

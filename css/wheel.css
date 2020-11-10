@@ -45,136 +45,136 @@ div p {
 
     margin-left: auto;
     margin-right: auto;
-    margin-top: 50px;
+    margin-top: 20px;
 }
 
 
 /* All sectors */
 
-.sector-one {
+.sector-0 {
     background-color: #54478c;
     z-index: 10;
     transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
+    /* -webkit-transform: rotate(0deg); */
 }
 
-.sector-two {
+.sector-1 {
     background-color: #2c699a;
     z-index: 20;
     transform: rotate(20deg);
-    -webkit-transform: rotate(20deg);
+    /* -webkit-transform: rotate(20deg); */
 }
 
-.sector-three{
+.sector-2{
     background-color: #048ba8;
     z-index: 30;
     transform: rotate(40deg);
-    -webkit-transform: rotate(40deg);
+    /* -webkit-transform: rotate(40deg); */
 }
 
-.sector-four{
+.sector-3{
     background-color: #0db39e;
     z-index: 40;
     transform: rotate(60deg);
-    -webkit-transform: rotate(60deg);
+    /* -webkit-transform: rotate(60deg); */
 }
 
-.sector-five{
+.sector-4{
     background-color: #16db93;
     z-index: 50;
     transform: rotate(80deg);
-    -webkit-transform: rotate(80deg);
+    /* -webkit-transform: rotate(80deg); */
 }
 
-.sector-six{
+.sector-5{
     background-color: #83e377;
     z-index: 60;
     transform: rotate(100deg);
-    -webkit-transform: rotate(100deg);
+    /* -webkit-transform: rotate(100deg); */
 }
 
-.sector-seven{
+.sector-6{
     background-color: #b9e769;
     z-index: 70;
     transform: rotate(120deg);
-    -webkit-transform: rotate(120deg);
+    /* -webkit-transform: rotate(120deg); */
 }
 
-.sector-eight{
+.sector-7{
     background-color: #efea5a;
     z-index: 80;
     transform: rotate(140deg);
-    -webkit-transform: rotate(140deg);
+    /* -webkit-transform: rotate(140deg); */
 }
 
 
-.sector-nine{
+.sector-8{
     background-color: #f29e4c;
     z-index: 90;
     transform: rotate(160deg);
-    -webkit-transform: rotate(160deg);
+    /* -webkit-transform: rotate(160deg); */
 }
 
 
-.sector-ten {
+.sector-9 {
     background-color: #54478c;
     z-index: 10;
     transform: rotate(180deg);
-    -webkit-transform: rotate(180deg);
+    /* -webkit-transform: rotate(180deg); */
 }
 
-.sector-eleven {
+.sector-10 {
     background-color: #2c699a;
     z-index: 20;
     transform: rotate(200deg);
-    -webkit-transform: rotate(200deg);
+    /* -webkit-transform: rotate(200deg); */
 }
 
-.sector-twelve {
+.sector-11 {
     background-color: #048ba8;
     z-index: 30;
     transform: rotate(220deg);
-    -webkit-transform: rotate(220deg);
+    /* -webkit-transform: rotate(220deg); */
 }
 
-.sector-thirteen {
+.sector-12 {
     background-color: #0db39e;
     z-index: 40;
     transform: rotate(240deg);
-    -webkit-transform: rotate(240deg);
+    /* -webkit-transform: rotate(240deg); */
 }
 
-.sector-fourteen {
+.sector-13 {
     background-color: #16db93;
     z-index: 50;
     transform: rotate(260deg);
-    -webkit-transform: rotate(260deg);
+    /* -webkit-transform: rotate(260deg); */
 }
 
-.sector-fifteen {
+.sector-14 {
     background-color: #83e377;
     z-index: 60;
     transform: rotate(280deg);
-    -webkit-transform: rotate(280deg);
+    /* -webkit-transform: rotate(280deg); */
 }
 
-.sector-sixteen {
+.sector-15 {
     background-color: #b9e769;
     z-index: 70;
     transform: rotate(300deg);
-    -webkit-transform: rotate(300deg);
+    /* -webkit-transform: rotate(300deg); */
 }
 
-.sector-seventeen {
+.sector-16 {
     background-color: #efea5a;
     z-index: 80;
     transform: rotate(320deg);
-    -webkit-transform: rotate(320deg);
+    /* -webkit-transform: rotate(320deg); */
 }
 
-.sector-eighteen {
+.sector-17 {
     background-color: #f29e4c;
     z-index: 90;
     transform: rotate(340deg);
-    -webkit-transform: rotate(340deg);
+    /* -webkit-transform: rotate(340deg); */
 }
