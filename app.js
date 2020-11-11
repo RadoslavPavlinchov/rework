@@ -10,7 +10,11 @@ class Wheel {
         this.currentSector;
         this.lastSector;
         this.sectorObj;
+        this.betSelect = document.getElementById( "bet-select" );
         this.sectors = this.generateSectors( sectorsCount );
+        this.btn = document.getElementsByClassName( "spin-btn" )[ 0 ];
+        this.currStatus = document.getElementsByClassName( "status" )[ 0 ];
+        this.balance = document.getElementById( "balance" );
 
         this.conditionsMap = {
             condition1: false,
@@ -29,10 +33,11 @@ class Wheel {
 
         for ( let i = 0; i < secCount; i++ ) {
             board[ `id-${i}` ] = {
-                prize: `${i + 1}`,
+                prize: ( i % 2 === 0 ) ? 0 : `${this.betSelect.value * ( i * 10 )}`,
                 hits: 0,
                 startDeg: +`${this.sectorWidth * i}`,
-                endDeg: +`${i * this.sectorWidth + this.sectorWidth}`
+                endDeg: +`${i * this.sectorWidth + this.sectorWidth}`,
+                multi: ( i % 2 === 0 ) ? 0 : `${i * 10}`
             }
         }
         return board;
@@ -46,19 +51,30 @@ class Wheel {
         return el.classList.add( cl );
     }
 
+    getRandomColor() {
+        let letters = '0123456789ABCDEF';
+        let color = '#';
+        for ( let i = 0; i < 6; i++ ) {
+            color += letters[ Math.floor( Math.random() * 16 ) ];
+        }
+        return color;
+    }
+
     rotateWheel( currentSector ) {
-        let btn = document.getElementsByClassName( "spin-btn" )[ 0 ];
-        let currStatus = document.getElementsByClassName( "status" )[ 0 ];
+        if ( Number( this.balance.textContent ) - Number( this.betSelect.value ) < 0 ) {
+            this.currStatus.textContent = 'Not enought credit'
+            return;
+        }
 
-        currStatus.textContent = "Spinning...";
-
+        this.currStatus.textContent = "Spinning...";
         let deg = this.sectors[ `id-${currentSector}` ][ "startDeg" ] + ( 4 * 360 ) + this.getRandomNum( 1, 20 );
-
         TweenMax.to( "#wheel-wrapper", 6, { rotation: `${deg}`, ease: Power3.easeInOut } );
-
         deg = parseInt( deg ) % 360;
 
-        btn.disabled = true;
+        this.balance.textContent = Number( this.balance.textContent ) - Number( this.betSelect.value );
+
+        this.betSelect.disabled = true;
+        this.btn.disabled = true;
 
         setTimeout( () => {
             this.resetWheel( currentSector, this.sectors, deg )
@@ -66,35 +82,30 @@ class Wheel {
     }
 
     resetWheel( sector, sectors, deg ) {
-        let btn = document.getElementsByClassName( "spin-btn" )[ 0 ];
-        let currStatus = document.getElementsByClassName( "status" )[ 0 ];
-
         TweenMax.to( "#wheel-wrapper", 0, { rotation: `${deg}`, ease: Power3.easeInOut } );
-
-        let arr = Object.entries( sectors )
-
+        let arr = Object.entries( sectors );
         for ( let i = 0; i < arr.length; i++ ) {
             let id = arr[ i ][ 0 ];
-
             if ( id === `id-${sector}` ) {
-                currStatus.textContent = "Congratulations! You've won " + "$" + arr[ i ][ 1 ][ "prize" ];
-                btn.disabled = false;
+                this.currStatus.textContent = "Congratulations! You've won " + "$" + arr[ i ][ 1 ][ "prize" ];
+                this.balance.textContent = Number( arr[ i ][ 1 ][ "prize" ] ) + Number( this.balance.textContent );
+
+                this.betSelect.disabled = false;
+                this.btn.disabled = false;
                 return;
             }
         }
     }
 
-
     modifyAsPerLastSector( sec ) {
-        if ( sec + 1 > 18 ) {
-            return sec -= 1
+        if ( sec + 1 > this.sectorsCount - 1 ) {
+            return sec -= 1;
         }
         return sec += 1;
     }
 
     hitSector( sector ) {
         let arr = Object.entries( this.sectors )
-
         for ( let i = 0; i < arr.length; i++ ) {
             let id = arr[ i ][ 0 ];
             if ( id === `id-${sector}` ) {
@@ -207,16 +218,21 @@ class Wheel {
         for ( let i = 0; i < this.splitInHalf; i++ ) {
             let sector = this.createElem( "div" );
             let p = this.createElem( "p" );
+            var col;
 
-            this.addClass( sector, `sector-${i}` ); // sectors 0 - 1 - 2 
+            this.addClass( sector, `sector-${this.sectorsCount - 1 - i}` ); // sectors 17 - 16 - 15
+
             this.addClass( sector, "sector" );
 
             p.textContent = this.sectors[ `id-${this.sectorsCount - 1 - i}` ][ "prize" ]; // prize 18 - 17 - 16
 
             sector.appendChild( p );
 
-            sector.style.backgroundColor = "#54478c";
-            sector.style.zIndex = `${10 + i}`
+            ( this.sectorsCount % 2 !== 0 && Math.floor( this.sectorsCount / 2 ) === i ) ?
+                ( col = this.getRandomColor(), sector.style.backgroundColor = col ) :
+                sector.style.backgroundColor = this.getRandomColor();
+
+            sector.style.zIndex = `${10 * i + 10}`
             sector.style.transform = "rotate(" + ( i * this.sectorWidth ) + "deg)";
 
             sectorWrapSemiDivFirst.appendChild( sector )
@@ -224,18 +240,27 @@ class Wheel {
 
 
         for ( let i = 0; i < this.splitInHalf; i++ ) {
-
             let sector = this.createElem( "div" );
             let p = this.createElem( "p" );
 
-            this.addClass( sector, `sector-${this.sectorsCount - 1 - i}` ); // sectors 17 - 16 - 15
+            this.addClass( sector, `sector-${i}` ); // sectors 0 - 1 - 2 
             this.addClass( sector, "sector" );
 
             p.textContent = this.sectors[ `id-${i}` ][ "prize" ]; // prize 0 - 1 - 2
 
             sector.appendChild( p );
+
+            ( Math.floor( this.splitInHalf ) === i ) ?
+                sector.style.backgroundColor = col :
+                sector.style.backgroundColor = this.getRandomColor();
+
+            sector.style.zIndex = `${( Math.ceil( this.splitInHalf ) * 10 ) - ( 10 * i )}`
+            sector.style.transform = "rotate(" + ( 360 - this.sectorWidth - ( this.sectorWidth * i ) ) + "deg)";
+
             sectorWrapSemiDivSecond.appendChild( sector );
         }
+
+        this.balance.textContent = `${50}`;
     }
 
     turnBasedLoop() {
@@ -245,20 +270,19 @@ class Wheel {
         let x2Sector;
         let x3Sector;
 
+        this.currentSector = this.getRandomNum( min, max );
+
         if ( this.tenTurns.length >= 10 ) {
             this.resetTenTurnsArr();
             this.resetHitters();
             this.sectors = this.generateSectors( this.sectorsCount );
         }
 
-        this.currentSector = this.getRandomNum( min, max );
-
         if ( this.lastSector ) {
             this.currentSector = this.checkPrevSectors( this.lastSector, this.currentSector );
         }
 
         this.sectorsWith2x = this.hitters.filter( x => x[ 1 ][ "hits" ] === 2 );
-
         this.sectorObj = this.isCurrSectorAlready2x( this.sectorsWith2x, this.currentSector );
 
         this.lockSector2xAnd3x( this.sectorsWith2x, this.sectorObj );
@@ -272,23 +296,17 @@ class Wheel {
 
         if ( this.conditionsMap[ "condition1" ] || this.conditionsMap[ "condition2" ] || this.conditionsMap[ "condition3" ] || this.conditionsMap[ "condition6" ] ) {
             let zeroHitters = Object.entries( this.sectors ).filter( x => x[ 1 ][ "hits" ] === 0 );
-
             let firstIndex = 0;
             let lastIndex = zeroHitters.length;
-
             let currentSectorIndex = this.getRandomNum( firstIndex, lastIndex );
-
             this.currentSector = Number( zeroHitters[ currentSectorIndex ][ 0 ].match( /\d+/g ).join() );
         }
 
         if ( this.conditionsMap[ "condition4" ] || this.conditionsMap[ "condition5" ] || this.conditionsMap[ "condition8" ] ) {
             let oneHitsArr = Object.entries( this.sectors ).filter( x => x[ 1 ][ "hits" ] === 1 );
-
             let firstIndex = 0;
             let lastIndex = oneHitsArr.length;
-
             let currentSectorIndex = this.getRandomNum( firstIndex, lastIndex );
-
             this.currentSector = Number( oneHitsArr[ currentSectorIndex ][ 0 ].match( /\d+/g ).join() );
         }
 
@@ -305,9 +323,7 @@ class Wheel {
         this.hitSector( this.currentSector, this.sectors );
 
         this.lastSector = this.currentSector;
-
         this.tenTurns.push( Object.entries( this.sectors )[ this.lastSector ] );
-
         this.hitters = Array.from( new Set( this.tenTurns.map( x => JSON.stringify( x ) ) ) ).map( x => JSON.parse( x ) );
 
         for ( const x in this.conditionsMap ) {
@@ -317,9 +333,37 @@ class Wheel {
     }
 }
 
-let application = new Wheel( 18 );
-document.addEventListener( 'DOMContentLoaded', application.generateBoard() )
-document.getElementsByClassName( "spin-btn" )[ 0 ].addEventListener( "click", () => { application.turnBasedLoop() } )
+let application = new Wheel( 4 );
+document.addEventListener( 'DOMContentLoaded', application.generateBoard() );
+
+application.betSelect.addEventListener( "change", () => {
+    let arrP = document.querySelectorAll( ".sector" )
+
+    for ( let i = 0; i < Object.entries( application.sectors ).length; i++ ) {
+        let x = Object.entries( application.sectors )[ i ];
+        x[ 1 ][ "prize" ] = Number( x[ 1 ][ "multi" ] ) * Number( application.betSelect.value );
+    }
+
+    let a = Array.from( arrP );
+
+    if ( a.length % 2 !== 0 ) {
+        a.pop();
+    }
+
+    let bigToLow = a.slice( 0, Math.floor( arrP.length / 2 ) ).reverse() // Max to min - 25 - 30 - 35
+    let lowToBig = a.slice( Math.ceil( arrP.length / 2 ), arrP.length ) // 0 - 5 - 10 - 15
+
+    let arr = [ ...lowToBig, ...bigToLow ];
+
+    for ( let i = 0; i < arr.length; i++ ) {
+        arr[ i ].textContent = Object.entries( application.sectors )[ i ][ 1 ][ "prize" ];
+    }
+
+} );
+
+application.btn.addEventListener( "click", () => { application.turnBasedLoop() } );
+
+
 
 
 

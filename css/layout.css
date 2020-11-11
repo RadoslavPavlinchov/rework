@@ -53,3 +53,16 @@ body {
     transform-origin: 0% 100%;
     -webkit-transform-origin: 0% 100%;
 }
+
+.aParent div {
+    float: left;
+    clear: none; 
+}
+
+#balance-wrapper {
+    margin-left: 50px;
+}
+
+#denomination-wrapper {
+    margin-left: 15px;
+}
